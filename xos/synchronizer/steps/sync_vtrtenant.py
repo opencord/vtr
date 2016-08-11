@@ -11,7 +11,6 @@ from synchronizers.base.SyncInstanceUsingAnsible import SyncInstanceUsingAnsible
 from core.models import Service, Slice, Tag
 from services.vsg.models import VSGService, VCPE_KIND
 from services.vtr.models import VTRService, VTRTenant
-from services.hpc.models import HpcService, CDNPrefix
 from xos.logger import Logger, logging
 
 # hpclibrary will be in steps/..
