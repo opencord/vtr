@@ -57,7 +57,7 @@
     shell: echo "{{ '{{' }} vm_traceroute_result.rc {{ '}}' }}" > /tmp/{{ resultcode_fn }}
     when: (scope=="vm") and (test=="traceroute")
 
-  - name: Run tcpdump for 30 seconds on VM
+  - name: Run tcpdump for 10 seconds on VM
     shell: /root/run_tcpdump.sh {{ argument }} 2>&1 > /tmp/{{ result_fn }}
     ignore_errors: yes
     register: vm_tcpdump_result
@@ -99,10 +99,10 @@
     command: docker cp /root/run_tcpdump.sh {{ container_name }}:/root/run_tcpdump.sh
     when: (scope=="container") and (test=="tcpdump")
 
-  - name: Run tcpdump for 30 seconds from Container
+  - name: Run tcpdump for 10 seconds from Container
     shell: docker exec {{ container_name }} /root/run_tcpdump.sh {{ argument }} 2>&1 > /tmp/{{ result_fn }}
     ignore_errors: yes
-    register: diagresult
+    register: ctr_tcpdump_result
     when: (scope=="container") and (test=="tcpdump")
 
   - name: Store ctr tcpdump resultcode to file
