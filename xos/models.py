@@ -12,6 +12,7 @@ from services.volt.models import CordSubscriberRoot
 import traceback
 from xos.exceptions import *
 from xos.config import Config
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 class ConfigurationError(Exception):
     pass
@@ -27,11 +28,6 @@ CORD_USE_VTN = getattr(Config(), "networking_use_vtn", False)
 class VTRService(Service):
     KIND = VTR_KIND
 
-    class Meta:
-        app_label = "vtr"
-        verbose_name = "vTR Service"
-        proxy = True
-
 class VTRTenant(Tenant):
     class Meta:
         proxy = True
@@ -41,12 +37,14 @@ class VTRTenant(Tenant):
     TEST_CHOICES = ( ("ping", "Ping"), ("traceroute", "Trace Route"), ("tcpdump", "Tcp Dump") )
     SCOPE_CHOICES = ( ("container", "Container"), ("vm", "VM") )
 
-    simple_attributes = ( ("test", None),
-                          ("argument", None),
-                          ("result", None),
-                          ("result_code", None),
-                          ("target_id", None),
-                          ("scope", "container") )
+    test = StrippedCharField(help_text="type of test", max_length=30, choices=TEST_CHOICES, null=False, blank=False)
+    scope = StrippedCharField(help_text="scope of test", max_length=30, choices=SCOPE_CHOICES, null=False, blank=False)
+    argument = models.TextField(blank=True, null=True)
+    result = models.TextField(blank=True, null=True)
+    result_code = StrippedCharField(blank=True, null=True)
+    target_type = models.ForeignKey(ContentType)
+    target_id = models.PositiveIntegerField()
+    target = GenericForeignKey("target_type", "target_id")
 
     sync_attributes = ( 'test', 'argument', "scope" )
 
@@ -56,34 +54,9 @@ class VTRTenant(Tenant):
             self._meta.get_field("provider_service").default = vtr_services[0].id
         super(VTRTenant, self).__init__(*args, **kwargs)
 
-    @property
-    def target(self):
-        if getattr(self, "cached_target", None):
-            return self.cached_target
-        target_id=self.target_id
-        if not target_id:
-            return None
-        users=CordSubscriberRoot.objects.filter(id=target_id)
-        if not users:
-            return None
-        user=users[0]
-        self.cached_target = users[0]
-        return user
-
-    @target.setter
-    def target(self, value):
-        if value:
-            value = value.id
-        if (value != self.get_attribute("target_id", None)):
-            self.cached_target=None
-        self.target_id = value
-
     def save(self, *args, **kwargs):
         super(VTRTenant, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         super(VTRTenant, self).delete(*args, **kwargs)
-
-
-VTRTenant.setup_simple_attributes()
 
