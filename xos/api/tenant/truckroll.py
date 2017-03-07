@@ -7,8 +7,10 @@ from rest_framework import status
 from core.models import *
 from django.forms import widgets
 from services.vtr.models import VTRTenant, VTRService
+from services.volt.models import CordSubscriberRoot
 from xos.apibase import XOSListCreateAPIView, XOSRetrieveUpdateDestroyAPIView, XOSPermissionDenied
 from api.xosapi_helpers import PlusModelSerializer, XOSViewSet, ReadOnlyField
+from django.contrib.contenttypes.models import ContentType
 
 def get_default_vtr_service():
     vtr_services = VTRService.get_service_objects().all()
@@ -44,6 +46,11 @@ class VTRTenantSerializer(PlusModelSerializer):
 
         def isSynced(self, obj):
             return (obj.enacted is not None) and (obj.enacted >= obj.updated)
+
+        def create(self, validated_data):
+            # force the target_type to be CordSubscriberRoot
+            validated_data["target_type_id"] = ContentType.objects.get_for_model(CordSubscriberRoot).id
+            return super(VTRTenantSerializer, self).create(validated_data)
 
 class TruckRollViewSet(XOSViewSet):
     base_name = "truckroll"

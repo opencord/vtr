@@ -11,6 +11,7 @@ from synchronizers.base.SyncInstanceUsingAnsible import SyncInstanceUsingAnsible
 from core.models import Service, Slice, Tag
 from services.vsg.models import VSGService, VCPE_KIND
 from services.vtr.models import VTRService, VTRTenant
+from services.volt.models import CordSubscriberRoot
 from xos.logger import Logger, logging
 
 # hpclibrary will be in steps/..
@@ -31,37 +32,39 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
     def __init__(self, *args, **kwargs):
         super(SyncVTRTenant, self).__init__(*args, **kwargs)
 
-    def fetch_pending(self, deleted):
-        if (not deleted):
-            objs = VTRTenant.get_tenant_objects().filter(Q(enacted__lt=F('updated')) | Q(enacted=None),Q(lazy_blocked=False))
-        else:
-            objs = VTRTenant.get_deleted_tenant_objects()
-
-        return objs
-
     def get_vtr_service(self, o):
         if not o.provider_service:
             return None
 
-        vtrs = VTRService.get_service_objects().filter(id=o.provider_service.id)
+        vtrs = VTRService.objects.filter(id=o.provider_service.id)
         if not vtrs:
             return None
 
         return vtrs[0]
 
+    def get_target(self, o):
+        target = o.target
+        if target:
+            # CordSubscriberRoot is a Proxy object, and o.target will point to
+            # the base class... so fix it up.
+            if target.__class__.__name__ == "TenantRoot":
+                target = CordSubscriberRoot.objects.get(id=target.id)
+            return target
+        return None
+
     def get_vcpe_service(self, o):
-        if o.target:
-            # o.target is a CordSubscriberRoot
-            if o.target.volt and o.target.volt.vcpe:
-                vcpes = VSGService.get_service_objects().filter(id=o.target.volt.vcpe.provider_service.id)
-                if not vcpes:
-                    return None
-                return vcpes[0]
+        target = self.get_target(o)
+        if target and target.volt and target.volt.vcpe:
+            vcpes = VSGService.get_service_objects().filter(id=target.volt.vcpe.provider_service.id)
+            if not vcpes:
+                return None
+            return vcpes[0]
         return None
 
     def get_instance(self, o):
-        if o.target and o.target.volt and o.target.volt.vcpe:
-            return o.target.volt.vcpe.instance
+        target = self.get_target(o)
+        if target and target.volt and target.volt.vcpe:
+            return target.volt.vcpe.instance
         else:
             return None
 
@@ -86,11 +89,13 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
         if not instance:
             raise Exception("No instance")
 
+        target = self.get_target(o)
+
         s_tags = []
         c_tags = []
-        if o.target and o.target.volt:
-            s_tags.append(o.target.volt.s_tag)
-            c_tags.append(o.target.volt.c_tag)
+        if target and target.volt:
+            s_tags.append(target.volt.s_tag)
+            c_tags.append(target.volt.c_tag)
 
         fields = {"s_tags": s_tags,
                 "c_tags": c_tags,
@@ -103,14 +108,14 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
 
         # add in the sync_attributes that come from the vSG object
         # this will be wan_ip, wan_mac, wan_container_ip, wan_container_mac, ...
-        if o.target and o.target.volt and o.target.volt.vcpe:
-            for attribute_name in o.target.volt.vcpe.sync_attributes:
-                fields[attribute_name] = getattr(o.target.volt.vcpe, attribute_name)
+        if target and target.volt and target.volt.vcpe:
+            for attribute_name in target.volt.vcpe.sync_attributes:
+                fields[attribute_name] = getattr(target.volt.vcpe, attribute_name)
 
         # add in the sync_attributes that come from the SubscriberRoot object
-        if o.target and hasattr(o.target, "sync_attributes"):
-            for attribute_name in o.target.sync_attributes:
-                fields[attribute_name] = getattr(o.target, attribute_name)
+        if target and hasattr(target, "sync_attributes"):
+            for attribute_name in target.sync_attributes:
+                fields[attribute_name] = getattr(target, attribute_name)
 
         for attribute_name in o.sync_attributes:
             fields[attribute_name] = getattr(o,attribute_name)
