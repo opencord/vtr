@@ -41,9 +41,10 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
     def get_target(self, o):
         target = o.target
         if target:
+            model_name = getattr(target, "model_name", target.__class__.__name__)
             # CordSubscriberRoot is a Proxy object, and o.target will point to
             # the base class... so fix it up.
-            if target.__class__.__name__ == "TenantRoot":
+            if model_name == "TenantRoot":
                 target = CordSubscriberRoot.objects.get(id=target.id)
             return target
         return None
@@ -51,7 +52,7 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
     def get_vcpe_service(self, o):
         target = self.get_target(o)
         if target and target.volt and target.volt.vcpe:
-            vcpes = VSGService.get_service_objects().filter(id=target.volt.vcpe.provider_service.id)
+            vcpes = VSGService.objects.filter(id=target.volt.vcpe.provider_service.id)
             if not vcpes:
                 return None
             return vcpes[0]
@@ -103,23 +104,22 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
                 "c_tags": c_tags,
                 "isolation": instance.isolation,
                 "container_name": "vcpe-%s-%s" % (s_tags[0], c_tags[0]),
-                "dns_servers": [x.strip() for x in vcpe_service.dns_servers.split(",")],
-
+#                "dns_servers": [x.strip() for x in vcpe_service.dns_servers.split(",")],
                 "result_fn": "%s-vcpe-%s-%s" % (o.test, s_tags[0], c_tags[0]),
                 "resultcode_fn": "code-%s-vcpe-%s-%s" % (o.test, s_tags[0], c_tags[0]) }
 
         # add in the sync_attributes that come from the vSG object
         # this will be wan_ip, wan_mac, wan_container_ip, wan_container_mac, ...
-        if target and target.volt and target.volt.vcpe:
-            for attribute_name in target.volt.vcpe.sync_attributes:
-                fields[attribute_name] = getattr(target.volt.vcpe, attribute_name)
+#        if target and target.volt and target.volt.vcpe:
+#            for attribute_name in target.volt.vcpe.sync_attributes:
+#                fields[attribute_name] = getattr(target.volt.vcpe, attribute_name)
 
         # add in the sync_attributes that come from the SubscriberRoot object
-        if target and hasattr(target, "sync_attributes"):
-            for attribute_name in target.sync_attributes:
-                fields[attribute_name] = getattr(target, attribute_name)
+#        if target and hasattr(target, "sync_attributes"):
+#            for attribute_name in target.sync_attributes:
+#                fields[attribute_name] = getattr(target, attribute_name)
 
-        for attribute_name in o.sync_attributes:
+        for attribute_name in ["scope", "test", "argument"]: # o.sync_attributes:
             fields[attribute_name] = getattr(o,attribute_name)
 
         return fields

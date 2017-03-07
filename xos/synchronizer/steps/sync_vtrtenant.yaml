@@ -6,13 +6,6 @@
   become: yes
   vars:
       container_name: {{ container_name }}
-      wan_container_ip: {{ wan_container_ip }}
-      wan_container_netbits: {{ wan_container_netbits }}
-      wan_container_mac: {{ wan_container_mac }}
-      wan_container_gateway_ip: {{ wan_container_gateway_ip }}
-      wan_vm_ip: {{ wan_vm_ip }}
-      wan_vm_mac: {{ wan_vm_mac }}
-
       scope: {{ scope }}
       test: {{ test }}
       argument: {{ argument }}
