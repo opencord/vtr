@@ -3,15 +3,12 @@ import socket
 import sys
 import base64
 import time
-from django.db.models import F, Q
 from xos.config import Config
-from synchronizers.base.syncstep import SyncStep
-from synchronizers.base.ansible_helper import run_template_ssh
-from synchronizers.base.SyncInstanceUsingAnsible import SyncInstanceUsingAnsible
-from core.models import Service, Slice, Tag
-from services.vsg.models import VSGService, VCPE_KIND
-from services.vtr.models import VTRService, VTRTenant
-from services.volt.models import CordSubscriberRoot
+from synchronizers.new_base.SyncInstanceUsingAnsible import SyncInstanceUsingAnsible
+from synchronizers.new_base.modelaccessor import *
+#from services.vsg.models import VSGService, VCPE_KIND
+#from services.vtr.models import VTRService, VTRTenant
+#from services.volt.models import CordSubscriberRoot
 from xos.logger import Logger, logging
 
 # hpclibrary will be in steps/..
@@ -27,7 +24,6 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
     observes=VTRTenant
     requested_interval=0
     template_name = "sync_vtrtenant.yaml"
-    #service_key_name = "/opt/xos/services/vtr/vcpe_private_key"
 
     def __init__(self, *args, **kwargs):
         super(SyncVTRTenant, self).__init__(*args, **kwargs)
@@ -69,11 +65,17 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
             return None
 
     def get_key_name(self, instance):
-        if instance.slice.service and (instance.slice.service.kind==VCPE_KIND):
-            # We need to use the vsg service's private key. Onboarding won't
-            # by default give us another service's private key, so let's assume
-            # onboarding has been configured to add vsg_rsa to the vtr service.
-            return "/opt/xos/services/vtr/keys/vsg_rsa"
+#        if instance.slice.service and (instance.slice.service.kind==VCPE_KIND):
+#            # We need to use the vsg service's private key. Onboarding won't
+#            # by default give us another service's private key, so let's assume
+#            # onboarding has been configured to add vsg_rsa to the vtr service.
+#            return "/opt/xos/services/vtr/keys/vsg_rsa"
+
+        if instance.slice and instance.slice.service and instance.slice.service.private_key_fn:
+            # Assume the service has shared its key with VTR.
+            # Look for the instance's service key name in VTR's key directory.
+            service_keyfn = instance.slice.service.private_key_fn
+            return os.path.join("/opt/xos/services/vtr/keys", os.path.basename(service_keyfn))
         else:
             raise Exception("VTR doesn't know how to get the private key for this instance")
 
