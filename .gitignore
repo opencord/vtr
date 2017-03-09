@@ -1,0 +1,5 @@
+.idea/
+xos/gui/node_modules/
+xos/gui/.tmp/
+xos/gui/typings/
+npm-debug.log
