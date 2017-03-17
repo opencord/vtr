@@ -1,0 +1,25 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: Onboard the exampleservice
+
+imports:
+   - custom_types/xos.yaml
+
+topology_template:
+  node_templates:
+    servicecontroller#vtr:
+      type: tosca.nodes.ServiceController
+      properties:
+          base_url: file:///opt/xos_services/vtr/xos/
+          # The following will concatenate with base_url automatically, if
+          # base_url is non-null.
+          models: models.py
+          admin: admin.py
+          admin_template: templates/vtradmin.html
+          tosca_custom_types: tosca/custom_types/vtr.yaml
+          tosca_resource: tosca/resources/vtrservice.py
+          rest_tenant: api/tenant/truckroll.py
+          private_key: file:///opt/xos/key_import/vsg_rsa
+          public_key: file:///opt/xos/key_import/vsg_rsa.pub
+          no_build: true
+          image: xosproject/vtr-synchronizer

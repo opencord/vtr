@@ -15,6 +15,7 @@ proxy_ssh_key=/opt/cord_profile/node_key
 proxy_ssh_user=root
 accessor_kind=api
 accessor_password=@/opt/xos/services/vtr/credentials/xosadmin@opencord.org
+required_models=VSGService, VTRService, VTRTenant, CordSubscriberRoot
 
 [networking]
 use_vtn=True
