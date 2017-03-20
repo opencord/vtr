@@ -1,4 +1,4 @@
-FROM xosproject/xos-gui-extension-builder
+FROM xosproject/xos-gui-extension-builder:candidate
 
 # Set environment vars
 ENV CODE_SOURCE .
