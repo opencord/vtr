@@ -13,6 +13,7 @@ class VtrDashboardComponent {
   public truckroll: any;
   public loader: boolean;
   public error: string;
+  private tenants = [];
   private Truckroll;
 
   constructor(
@@ -24,10 +25,17 @@ class VtrDashboardComponent {
     this.Truckroll = this.XosVtrTruckroll.getResource();
 
     // load subscribers
-    this.XosModelStore.query('Subscribers')
+    this.XosModelStore.query('CordSubscriberRoot')
       .subscribe(
         res => {
           this.subscribers = res;
+        }
+      );
+
+    this.XosModelStore.query('Tenant')
+      .subscribe(
+        res => {
+          this.tenants = res;
         }
       );
   }
@@ -43,6 +51,10 @@ class VtrDashboardComponent {
     delete this.error;
 
     this.truckroll.target_type_id = this.getSubscriberContentTypeId(this.truckroll.target_id);
+    
+    this.truckroll.subscriber_tenant_id = this.getVsgTenantForSubscriber(this.truckroll.target_id);
+
+    console.log(this.truckroll);
 
     const test = new this.Truckroll(this.truckroll);
     this.loader = true;
@@ -51,6 +63,12 @@ class VtrDashboardComponent {
       this.waitForTest(res.id);
     });
   };
+
+  private getVsgTenantForSubscriber(subscriberId: number): number {
+    const voltTenant = _.find(this.tenants, {subscriber_root_id: subscriberId});
+    const vsgTenant = _.find(this.tenants, {subscriber_tenant: voltTenant.id});
+    return vsgTenant.id;
+  }
 
   private getSubscriberContentTypeId(subscriberId: number) {
     return _.find(this.subscribers, {id: subscriberId}).self_content_type_id;
@@ -77,7 +95,7 @@ class VtrDashboardComponent {
             ) {
             this.truckroll = angular.copy(testResult);
             this.loader = false;
-            this.Truckroll.delete({id: id});
+            // this.Truckroll.delete({id: id});
           }
           // else keep polling
           else {
