@@ -66,7 +66,7 @@ class VtrDashboardComponent {
 
   private getVsgTenantForSubscriber(subscriberId: number): number {
     const voltTenant = _.find(this.tenants, {subscriber_root_id: subscriberId});
-    const vsgTenant = _.find(this.tenants, {subscriber_tenant: voltTenant.id});
+    const vsgTenant = _.find(this.tenants, {subscriber_tenant_id: voltTenant.id});
     return vsgTenant.id;
   }
 
