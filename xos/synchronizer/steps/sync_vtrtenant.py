@@ -110,9 +110,10 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
 
         # add in the sync_attributes that come from the vSG object
         # this will be wan_ip, wan_mac, wan_container_ip, wan_container_mac, ...
-#        if target and target.volt and target.volt.vcpe:
-#            for attribute_name in target.volt.vcpe.sync_attributes:
-#                fields[attribute_name] = getattr(target.volt.vcpe, attribute_name)
+        if target and target.volt and target.volt.vcpe:
+            for attribute_name in ["wan_vm_ip", "wan_container_ip"]:
+                if hasattr(target.volt.vcpe, attribute_name):
+                    fields[attribute_name] = getattr(target.volt.vcpe, attribute_name)
 
         # add in the sync_attributes that come from the SubscriberRoot object
 #        if target and hasattr(target, "sync_attributes"):
