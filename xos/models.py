@@ -38,7 +38,7 @@ class VTRTenant(Tenant):
     class Meta:
         app_label = "vtr"
 
-    TEST_CHOICES = ( ("ping", "Ping"), ("traceroute", "Trace Route"), ("tcpdump", "Tcp Dump") )
+    TEST_CHOICES = ( ("ping", "Ping"), ("traceroute", "Trace Route"), ("tcpdump", "Tcp Dump"), ("memory", "Memory"), ("bandwidth","Bandwidth") )
     SCOPE_CHOICES = ( ("container", "Container"), ("vm", "VM") )
 
     test = StrippedCharField(help_text="type of test", max_length=30, choices=TEST_CHOICES, null=False, blank=False)

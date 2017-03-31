@@ -74,6 +74,60 @@
     shell: echo "{{ '{{' }} ctr_ping_result.rc {{ '}}' }}" > /tmp/{{ resultcode_fn }}
     when: (scope=="container") and (test=="ping")
 
+  - name: Checking memory utilization
+    shell: docker exec {{ container_name }} free {{ '-m' if argument== 'mb' else '-h' }} 2>&1 > /tmp/{{ result_fn }}
+    ignore_errors: yes
+    register: ctr_memory_result
+    when: (scope=="container") and (test=="memory")
+
+  - name: Store container health resultcode to file
+    shell: echo "{{ '{{' }} ctr_memory_result.rc {{ '}}' }}" > /tmp/{{ resultcode_fn }}
+    when: (scope=="container") and (test=="memory")
+
+  - name: Install iperf into Host vm
+    shell: apt-get -y install iperf
+    when: (scope=="container") and (test=="bandwidth")
+
+  - name: Install iperf into Container
+    shell: docker exec {{ container_name }} apt-get -y install iperf
+    when: (scope=="container") and (test=="bandwidth")
+
+  - name: Starting the iperf server in Host vm for uplink_upload
+    shell: iperf -s -u
+    async: 10
+    poll: 0
+    when: (scope=="container") and (test=="bandwidth") and (argument=="uplink_upload")
+
+  - name: Starting the iperf client in vsg container for uplink_upload
+    shell: docker exec {{ container_name }} iperf -c {{ wan_vm_ip }} -u -b 1000M 2>&1 > /tmp/{{ result_fn }}
+    ignore_errors: yes
+    register: ctr_bw_upload_result
+    when: (scope=="container") and (test=="bandwidth") and (argument=="uplink_upload")
+
+  - name: Starting the iperf server in vsg container for uplink_download
+    shell: docker exec {{ container_name }} iperf -s -u
+    async: 10
+    poll: 0
+    when: (scope=="container") and (test=="bandwidth") and (argument=="uplink_download")
+
+  - name: Starting the iperf client in the host vm for uplink_download
+    shell: iperf -c {{ wan_container_ip }} -u -b 1000M 2>&1 > /tmp/{{ result_fn }}
+    ignore_errors: yes
+    register: ctr_bw_download_result
+    when: (scope=="container") and (test=="bandwidth") and (argument=="uplink_download")
+
+  - name: Uninstall iperf from Container
+    shell: docker exec {{ container_name }} apt-get -y remove iperf
+    when: (scope=="container") and (test=="bandwidth")
+
+  - name: Store upload bandwidth resultcode to file
+    shell: echo "{{ '{{' }} ctr_bw_upload_result.rc {{ '}}' }}" > /tmp/{{ resultcode_fn }}
+    when: (scope=="container") and (test=="bandwidth") and (argument=="uplink_upload")
+
+  - name: Store download bandwidth resultcode to file
+    shell: echo "{{ '{{' }} ctr_bw_download_result.rc {{ '}}' }}" > /tmp/{{ resultcode_fn }}
+    when: (scope=="container") and (test=="bandwidth") and (argument=="uplink_download")
+
   - name: Install traceroute into Container
     shell: docker exec {{ container_name }} apt-get -y install traceroute
     when: (scope=="container") and (test=="traceroute")
