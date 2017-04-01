@@ -1,4 +1,3 @@
-import './vtr-dashboard.scss';
 import * as _ from 'lodash';
 import {subscribeOn} from 'rxjs/operator/subscribeOn';
 
