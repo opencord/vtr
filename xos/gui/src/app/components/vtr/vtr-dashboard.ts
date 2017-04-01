@@ -24,9 +24,10 @@ class VtrDashboardComponent {
     this.Truckroll = this.XosVtrTruckroll.getResource();
 
     // load subscribers
-    this.XosModelStore.query('CordSubscriberRoot')
+    this.XosModelStore.query('CordSubscriberRoot', '/volt/cordsubscriberroots')
       .subscribe(
         res => {
+          console.log(res);
           this.subscribers = res;
         }
       );
@@ -89,7 +90,7 @@ class VtrDashboardComponent {
           // if is synced
           if (
               testResult.backend_status.indexOf('2') >= 0 ||
-              (testResult.result_code && testResult.result_code.indexOf('2') >= 0) ||
+              testResult.backend_status.indexOf('1') >= 0 ||
               testResult.is_synced
             ) {
             this.truckroll = angular.copy(testResult);
