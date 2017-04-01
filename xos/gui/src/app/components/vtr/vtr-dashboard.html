@@ -42,23 +42,35 @@
     <div class="col-xs-12">
       <label>Test:</label>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-2 col-xs-offset-1">
       <a 
       ng-click="vm.truckroll.test = 'ping'"
       ng-class="{'btn-default': vm.truckroll.test !== 'ping', 'btn-primary': vm.truckroll.test === 'ping'}"
       class="btn btn-block">Ping</a>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-2">
       <a 
       ng-click="vm.truckroll.test = 'traceroute'"
       ng-class="{'btn-default': vm.truckroll.test !== 'traceroute', 'btn-primary': vm.truckroll.test === 'traceroute'}"
       class="btn btn-block">Traceroute</a>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-2">
       <a 
       ng-click="vm.truckroll.test = 'tcpdump'"
       ng-class="{'btn-default': vm.truckroll.test !== 'tcpdump', 'btn-primary': vm.truckroll.test === 'tcpdump'}"
       class="btn btn-block">Tcp Dump</a>
+    </div>
+    <div class="col-xs-2">
+      <a
+        ng-click="vm.truckroll.test = 'memory'"
+        ng-class="{'btn-default': vm.truckroll.test !== 'memory', 'btn-primary': vm.truckroll.test === 'memory'}"
+        class="btn btn-block">Memory</a>
+    </div>
+    <div class="col-xs-2">
+      <a
+        ng-click="vm.truckroll.test = 'bandwidth'"
+        ng-class="{'btn-default': vm.truckroll.test !== 'bandwidth', 'btn-primary': vm.truckroll.test === 'bandwidth'}"
+        class="btn btn-block">Bandwidth</a>
     </div>
   </div>
   <div class="row">
@@ -66,12 +78,12 @@
       <label>Argument:</label>
     </div>
     <div class="col-xs-12">
-      <input type="text" class="form-control" ng-model="vm.truckroll.argument" required />
+      <input type="text" class="form-control" ng-model="vm.truckroll.argument"/>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-12" ng-show="!vm.loader">
-      <button class="btn btn-success btn-block">Run test</button>
+      <button class="btn btn-success">Run test</button>
     </div>
   </div>
 </form>
