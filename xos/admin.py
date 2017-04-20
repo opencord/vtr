@@ -13,7 +13,7 @@ from core.admin import ServiceAppAdmin,SliceInline,ServiceAttrAsTabInline, ReadO
 from core.middleware import get_request
 
 from services.vtr.models import *
-from services.volt.models import CordSubscriberRoot
+from services.rcord.models import CordSubscriberRoot
 
 from functools import update_wrapper
 from django.contrib.admin.views.main import ChangeList
