@@ -1,0 +1,17 @@
+option kind="vTR";
+option name="vtr";
+option verbose_name="Virtual Truck Roll Service";
+
+message VTRTenant (Tenant){
+     required string test = 1 [choices = "(('ping', 'Ping'), ('traceroute', 'Trace Route'), ('tcpdump', 'Tcp Dump'), ('memory', 'Memory'), ('bandwidth', 'Bandwidth'))", max_length = 30, content_type = "stripped", blank = False, help_text = "type of test", null = False, db_index = False];
+     required string scope = 2 [choices = "(('container', 'Container'), ('vm', 'VM'))", max_length = 30, content_type = "stripped", blank = False, help_text = "scope of test", null = False, db_index = False];
+     optional string argument = 3 [db_index = False, max_length = 40, null = True, content_type = "stripped", blank = True];
+     optional string result = 4 [db_index = False, null = True, blank = True];
+     optional string result_code = 5 [db_index = False, max_length = 32, null = True, content_type = "stripped", blank = True];
+     required manytoone target_type->ContentType:vtrtenant = 6 [db_index = True, null = False, blank = False];
+     required uint32 target_id = 7 [db_index = False, null = False, blank = False];
+}
+
+
+message VTRService (Service){
+}
