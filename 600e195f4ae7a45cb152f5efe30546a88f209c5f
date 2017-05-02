@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba092121_4d898fc9",
+        "filename": "xos/attic/header.py.orig",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2017-05-02T03:33:18Z",
+      "side": 1,
+      "message": "Is this a temporary file?",
+      "revId": "600e195f4ae7a45cb152f5efe30546a88f209c5f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
