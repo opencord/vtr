@@ -56,7 +56,7 @@ class VTRTenantForm(forms.ModelForm):
         self.fields['provider_service'].queryset = VTRService.get_service_objects().all()
         if self.instance:
             if self.instance.target_id:
-                self.fields["target"].initial = CordSubscriberRoot.objects.get(id=self.instance.target_id)
+                self.fields["target"].initial = CordSubscriberRoot.get_content_object(self.instance.target_type, self.instance.target_id)
         if (not self.instance) or (not self.instance.pk):
             self.fields['kind'].initial = VTR_KIND
             if VTRService.get_service_objects().exists():
@@ -64,7 +64,7 @@ class VTRTenantForm(forms.ModelForm):
 
     def save(self, commit=True):
         if self.cleaned_data.get("target"):
-            self.instance.target_type = ContentType.objects.get_for_model(CordSubscriberRoot)
+            self.instance.target_type = self.cleaned_data.get("target").get_content_type_key()
             self.instance.target_id = self.cleaned_data.get("target").id
         return super(VTRTenantForm, self).save(commit=commit)
 
