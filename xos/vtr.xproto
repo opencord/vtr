@@ -8,7 +8,7 @@ message VTRTenant (Tenant){
      optional string argument = 3 [db_index = False, max_length = 40, null = True, content_type = "stripped", blank = True];
      optional string result = 4 [db_index = False, null = True, blank = True];
      optional string result_code = 5 [db_index = False, max_length = 32, null = True, content_type = "stripped", blank = True];
-     required manytoone target_type->ContentType:vtrtenant = 6 [db_index = True, null = False, blank = False];
+     required string target_type = 6 [max_length = 1024, content_type = "stripped", blank = False, help_text = "Target type id linked to this vtrtenant", null = False, db_index = False];
      required uint32 target_id = 7 [db_index = False, null = False, blank = False];
 }
 
