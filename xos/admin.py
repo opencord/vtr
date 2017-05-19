@@ -73,7 +73,7 @@ class VTRTenantForm(forms.ModelForm):
         fields = '__all__'
 
 class VTRTenantAdmin(ReadOnlyAwareAdmin):
-    list_display = ('backend_status_icon', 'id', 'target', 'test', 'argument' )
+    list_display = ('backend_status_icon', 'id', 'target_type', 'target_id', 'test', 'argument' )
     list_display_links = ('backend_status_icon', 'id')
     fieldsets = [ (None, {'fields': ['backend_status_text', 'kind', 'provider_service',
                                      'target', 'scope', 'test', 'argument', 'is_synced', 'result_code', 'result'],
