@@ -46,21 +46,21 @@ class VTRServiceAdmin(ReadOnlyAwareAdmin):
                            ) #('hpctools.html', 'top', 'tools') )
 
     def get_queryset(self, request):
-        return VTRService.get_service_objects_by_user(request.user)
+        return VTRService.select_by_user(request.user)
 
 class VTRTenantForm(forms.ModelForm):
     target = forms.ModelChoiceField(queryset=CordSubscriberRoot.objects.all())
 
     def __init__(self,*args,**kwargs):
         super (VTRTenantForm,self ).__init__(*args,**kwargs)
-        self.fields['provider_service'].queryset = VTRService.get_service_objects().all()
+        self.fields['provider_service'].queryset = VTRService.objects.all()
         if self.instance:
             if self.instance.target_id:
                 self.fields["target"].initial = CordSubscriberRoot.get_content_object(self.instance.target_type, self.instance.target_id)
         if (not self.instance) or (not self.instance.pk):
             self.fields['kind'].initial = VTR_KIND
-            if VTRService.get_service_objects().exists():
-               self.fields["provider_service"].initial = VTRService.get_service_objects().all()[0]
+            if VTRService.objects.exists():
+               self.fields["provider_service"].initial = VTRService.objects.all()[0]
 
     def save(self, commit=True):
         if self.cleaned_data.get("target"):
@@ -87,7 +87,7 @@ class VTRTenantAdmin(ReadOnlyAwareAdmin):
         return (obj.enacted is not None) and (obj.enacted >= obj.updated)
 
     def get_queryset(self, request):
-        return VTRTenant.get_tenant_objects_by_user(request.user)
+        return VTRTenant.select_by_user(request.user)
 
 admin.site.register(VTRService, VTRServiceAdmin)
 admin.site.register(VTRTenant, VTRTenantAdmin)

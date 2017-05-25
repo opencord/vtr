@@ -13,7 +13,7 @@ from api.xosapi_helpers import PlusModelSerializer, XOSViewSet, ReadOnlyField
 from django.contrib.contenttypes.models import ContentType
 
 def get_default_vtr_service():
-    vtr_services = VTRService.get_service_objects().all()
+    vtr_services = VTRService.objects.all()
     if vtr_services:
         return vtr_services[0]
     return None
@@ -29,7 +29,7 @@ class VTRTenantSerializer(PlusModelSerializer):
         test = serializers.CharField()
         scope = serializers.CharField()
         argument = serializers.CharField(required=False)
-        provider_service = serializers.PrimaryKeyRelatedField(queryset=VTRService.get_service_objects().all(), default=get_default_vtr_service)
+        provider_service = serializers.PrimaryKeyRelatedField(queryset=VTRService.objects.all(), default=get_default_vtr_service)
         result = serializers.CharField(required=False)
         result_code = serializers.CharField(required=False)
         backend_status = ReadOnlyField()
@@ -56,7 +56,7 @@ class TruckRollViewSet(XOSViewSet):
     base_name = "truckroll"
     method_name = "truckroll"
     method_kind = "viewset"
-    queryset = VTRTenantForAPI.get_tenant_objects().all() # select_related().all()
+    queryset = VTRTenantForAPI.objects.all() # select_related().all()
     serializer_class = VTRTenantSerializer
 
     @classmethod
