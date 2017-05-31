@@ -1,0 +1,9 @@
+name: vtr-synchronizer
+accessor:
+  username: xosadmin@opencord.org
+  password: "@/opt/xos/services/vtr/credentials/xosadmin@opencord.org"
+required_models:
+  - VSGService
+  - VTRService
+  - VTRTenant
+  - CordSubscriberRoot
