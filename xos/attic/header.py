@@ -8,7 +8,7 @@ from django.db.models import *
 from operator import itemgetter, attrgetter, methodcaller
 from core.models import Tag
 from core.models.service import LeastLoadedNodeScheduler
-from services.volt.models import CordSubscriberRoot
+from services.rcord.models import CordSubscriberRoot
 import traceback
 from xos.exceptions import *
 from xos.config import Config
