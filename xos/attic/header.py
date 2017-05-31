@@ -8,14 +8,11 @@ from django.db.models import *
 from operator import itemgetter, attrgetter, methodcaller
 import traceback
 from xos.exceptions import *
-from xos.config import Config
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 class ConfigurationError(Exception):
+    # FIXME log the error
     pass
 
 VTR_KIND = "vTR"
-
-CORD_USE_VTN = getattr(Config(), "networking_use_vtn", False)
-

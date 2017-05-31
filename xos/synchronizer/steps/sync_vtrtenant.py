@@ -3,7 +3,6 @@ import socket
 import sys
 import base64
 import time
-from xos.config import Config
 from synchronizers.new_base.SyncInstanceUsingAnsible import SyncInstanceUsingAnsible
 from synchronizers.new_base.modelaccessor import *
 from xos.logger import Logger, logging
@@ -13,8 +12,6 @@ parentdir = os.path.join(os.path.dirname(__file__),"..")
 sys.path.insert(0,parentdir)
 
 logger = Logger(level=logging.INFO)
-
-CORD_USE_VTN = getattr(Config(), "networking_use_vtn", False)
 
 class SyncVTRTenant(SyncInstanceUsingAnsible):
     provides=[VTRTenant]
