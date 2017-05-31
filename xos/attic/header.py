@@ -6,9 +6,6 @@ from django.db import models, transaction
 from django.forms.models import model_to_dict
 from django.db.models import *
 from operator import itemgetter, attrgetter, methodcaller
-from core.models import Tag
-from core.models.service import LeastLoadedNodeScheduler
-from services.volt.models import CordSubscriberRoot
 import traceback
 from xos.exceptions import *
 from xos.config import Config

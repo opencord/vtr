@@ -6,9 +6,6 @@ import time
 from xos.config import Config
 from synchronizers.new_base.SyncInstanceUsingAnsible import SyncInstanceUsingAnsible
 from synchronizers.new_base.modelaccessor import *
-#from services.vsg.models import VSGService, VCPE_KIND
-#from services.vtr.models import VTRService, VTRTenant
-#from services.volt.models import CordSubscriberRoot
 from xos.logger import Logger, logging
 
 # hpclibrary will be in steps/..
