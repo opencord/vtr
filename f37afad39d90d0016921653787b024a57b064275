@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a0e1d27_409f2404",
+        "filename": "xos/synchronizer/vtr-synchronizer.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2017-06-01T23:31:44Z",
+      "side": 1,
+      "message": "Can we use vtr_config.yaml in the current working dir instead?",
+      "range": {
+        "startLine": 10,
+        "startChar": 51,
+        "endLine": 10,
+        "endChar": 56
+      },
+      "revId": "f37afad39d90d0016921653787b024a57b064275",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a0e1d27_80953ce6",
         "filename": "xos/synchronizer/vtr-synchronizer.py",
         "patchSetId": 2
