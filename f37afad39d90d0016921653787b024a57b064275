@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a0e1d27_80953ce6",
+        "filename": "xos/synchronizer/vtr-synchronizer.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2017-06-01T23:25:58Z",
+      "side": 1,
+      "message": "this lines were to test the synchronizer from the IDE, they\u0027ll be removed before merging",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 121
+      },
+      "revId": "f37afad39d90d0016921653787b024a57b064275",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
