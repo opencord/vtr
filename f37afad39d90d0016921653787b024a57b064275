@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a0e1d27_000c8c41",
+        "filename": "xos/synchronizer/run-from-api.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000035
+      },
+      "writtenOn": "2017-06-02T06:42:05Z",
+      "side": 1,
+      "message": "Nice :-)",
+      "revId": "f37afad39d90d0016921653787b024a57b064275",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a0e1d27_409f2404",
         "filename": "xos/synchronizer/vtr-synchronizer.py",
         "patchSetId": 2
