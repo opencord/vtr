@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a0e1d27_f192889e",
+        "filename": "xos/attic/header.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2017-06-06T15:35:32Z",
+      "side": 1,
+      "message": "Normally exceptions are logged in a try/except block, not inside of an exception class. See https://www.loggly.com/blog/exceptional-logging-of-exceptions-in-python/",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "15f11b9e0dc178ad070090fce853d62ed920dad5",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
