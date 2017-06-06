@@ -22,6 +22,30 @@
       "revId": "15f11b9e0dc178ad070090fce853d62ed920dad5",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a0e1d27_515814fa",
+        "filename": "xos/attic/header.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2017-06-06T17:08:28Z",
+      "side": 1,
+      "message": "That make sense, but we should definitely do something other that \"pass\", otherwise I don\u0027t see any value in having this class",
+      "parentUuid": "9a0e1d27_f192889e",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "15f11b9e0dc178ad070090fce853d62ed920dad5",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
