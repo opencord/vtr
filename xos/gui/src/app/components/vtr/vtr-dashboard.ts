@@ -50,7 +50,7 @@ class VtrDashboardComponent {
     delete this.truckroll.backend_status;
     delete this.error;
 
-    this.truckroll.target_type_id = this.getSubscriberContentTypeId(this.truckroll.target_id);
+    this.truckroll.target_type = this.getSubscriberContentTypeId(this.truckroll.target_id);
     
     this.truckroll.subscriber_tenant_id = this.getVsgTenantForSubscriber(this.truckroll.target_id);
 
