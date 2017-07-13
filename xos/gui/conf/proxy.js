@@ -6,18 +6,7 @@ const apiProxy = httpProxy.createProxyServer({
   target: `http://${target}`
 });
 
-const staticFilesProxy = httpProxy.createProxyServer({
-  target: `http://${target}/spa`
-});
-
 apiProxy.on('error', (error, req, res) => {
-  res.writeHead(500, {
-    'Content-Type': 'text/plain'
-  });
-  console.error('[Proxy]', error);
-});
-
-staticFilesProxy.on('error', (error, req, res) => {
   res.writeHead(500, {
     'Content-Type': 'text/plain'
   });
@@ -26,5 +15,4 @@ staticFilesProxy.on('error', (error, req, res) => {
 
 module.exports = {
   api: apiProxy,
-  static: staticFilesProxy
 };
