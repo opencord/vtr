@@ -9,7 +9,7 @@ from django.contrib.auth.signals import user_logged_in
 from django.utils import timezone
 from django.contrib.contenttypes import generic
 from suit.widgets import LinkedSelect
-from core.admin import ServiceAppAdmin,SliceInline,ServiceAttrAsTabInline, ReadOnlyAwareAdmin, XOSTabularInline, ServicePrivilegeInline, TenantRootTenantInline, TenantRootPrivilegeInline
+from core.admin import ServiceAppAdmin,SliceInline,ServiceAttrAsTabInline, ReadOnlyAwareAdmin, XOSTabularInline, ServicePrivilegeInline
 from core.middleware import get_request
 
 from services.vtr.models import *
@@ -53,14 +53,13 @@ class VTRTenantForm(forms.ModelForm):
 
     def __init__(self,*args,**kwargs):
         super (VTRTenantForm,self ).__init__(*args,**kwargs)
-        self.fields['provider_service'].queryset = VTRService.objects.all()
+        self.fields['owner'].queryset = VTRService.objects.all()
         if self.instance:
             if self.instance.target_id:
                 self.fields["target"].initial = CordSubscriberRoot.get_content_object(self.instance.target_type, self.instance.target_id)
         if (not self.instance) or (not self.instance.pk):
-            self.fields['kind'].initial = VTR_KIND
             if VTRService.objects.exists():
-               self.fields["provider_service"].initial = VTRService.objects.all()[0]
+               self.fields["owner"].initial = VTRService.objects.all()[0]
 
     def save(self, commit=True):
         if self.cleaned_data.get("target"):
@@ -75,7 +74,7 @@ class VTRTenantForm(forms.ModelForm):
 class VTRTenantAdmin(ReadOnlyAwareAdmin):
     list_display = ('backend_status_icon', 'id', 'target_type', 'target_id', 'test', 'argument' )
     list_display_links = ('backend_status_icon', 'id')
-    fieldsets = [ (None, {'fields': ['backend_status_text', 'kind', 'provider_service',
+    fieldsets = [ (None, {'fields': ['backend_status_text', 'owner',
                                      'target', 'scope', 'test', 'argument', 'is_synced', 'result_code', 'result'],
                           'classes':['suit-tab suit-tab-general']})]
     readonly_fields = ('backend_status_text', 'service_specific_attribute', 'is_synced')

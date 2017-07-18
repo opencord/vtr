@@ -23,10 +23,11 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
         super(SyncVTRTenant, self).__init__(*args, **kwargs)
 
     def get_vtr_service(self, o):
-        if not o.provider_service:
+        if not o.owner:
             return None
 
-        vtrs = VTRService.objects.filter(id=o.provider_service.id)
+        # cast from Service to VTRService
+        vtrs = VTRService.objects.filter(id=o.owner.id)
         if not vtrs:
             return None
 
@@ -36,20 +37,17 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
         target = o.target
         if target:
             model_name = getattr(target, "model_name", target.__class__.__name__)
-            # CordSubscriberRoot is a Proxy object, and o.target will point to
-            # the base class... so fix it up.
-            if model_name == "TenantRoot":
-                target = CordSubscriberRoot.objects.get(id=target.id)
-            return target
+            if model_name in ["ServiceInstance", "CordSubscriberRoot"]:
+                # cast from ServiceInstance to CordSubscriberRoot
+                csrs = CordSubscriberRoot.objects.filter(id=target.id)
+                if csrs:
+                    return csrs[0]
         return None
 
     def get_vcpe_service(self, o):
         target = self.get_target(o)
         if target and target.volt and target.volt.vcpe:
-            vcpes = VSGService.objects.filter(id=target.volt.vcpe.provider_service.id)
-            if not vcpes:
-                return None
-            return vcpes[0]
+            return target.volt.vcpe
         return None
 
     def get_instance(self, o):
