@@ -18,7 +18,6 @@ topology_template:
           admin_template: templates/vtradmin.html
           tosca_custom_types: tosca/custom_types/vtr.yaml
           tosca_resource: tosca/resources/vtrservice.py
-          rest_tenant: api/tenant/truckroll.py
           private_key: file:///opt/xos/key_import/vsg_rsa
           public_key: file:///opt/xos/key_import/vsg_rsa.pub
 
