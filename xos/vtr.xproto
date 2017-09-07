@@ -1,4 +1,5 @@
 option kind="vTR";
+option app_label = "vtr";
 option name="vtr";
 
 message VTRTenant (ServiceInstance){
