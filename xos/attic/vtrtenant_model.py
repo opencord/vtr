@@ -22,9 +22,6 @@ def __init__(self, *args, **kwargs):
         self._meta.get_field("owner").default = vtr_services[0].id
     super(VTRTenant, self).__init__(*args, **kwargs)
 
-def save(self, *args, **kwargs):
-    super(VTRTenant, self).save(*args, **kwargs)
-
 def delete(self, *args, **kwargs):
     super(VTRTenant, self).delete(*args, **kwargs)
 
