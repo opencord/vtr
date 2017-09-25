@@ -60,26 +60,35 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
                     return csrs[0]
         return None
 
-    def get_vcpe_service(self, o):
-        target = self.get_target(o)
-        if target and target.volt and target.volt.vcpe:
-            return target.volt.vcpe
-        return None
+    def gather_information(self, service_instance):
+        """ gather_information: inspect a service chain for information that will be useful to the VTN service, and
+            try to do it in a service-agnostic way. We know what we're looking for (instances, ip addresses, etc) but
+            not necessarily where we will find it.
+        """
 
-    def get_instance(self, o):
-        target = self.get_target(o)
-        if target and target.volt and target.volt.vcpe:
-            return target.volt.vcpe.instance
-        else:
-            return None
+        if not service_instance:
+            return {}
+
+        # extract useful information from the service_instance
+        info = {}
+        for link in service_instance.subscribed_links:
+            provider_si = link.provider_service_instance
+            for k in ["instance", "wan_vm_ip", "wan_container_ip", "s_tag", "c_tag"]:
+                if hasattr(provider_si, k)
+                    info[k] = getattr(provider_si, k)
+
+        # now, recurse to check the children
+        for link in service_instance.subscribed_links:
+            child_info = self.gather_information(link.provider_service_instance)
+
+            # prefer values we got from a parent to values we got from a child
+            for (k,v) in child_info.items():
+                if not k in info:
+                    info[k] = v
+
+        return info
 
     def get_key_name(self, instance):
-#        if instance.slice.service and (instance.slice.service.kind==VCPE_KIND):
-#            # We need to use the vsg service's private key. Onboarding won't
-#            # by default give us another service's private key, so let's assume
-#            # onboarding has been configured to add vsg_rsa to the vtr service.
-#            return "/opt/xos/services/vtr/keys/vsg_rsa"
-
         if instance.slice and instance.slice.service and instance.slice.service.private_key_fn:
             # Assume the service has shared its key with VTR.
             # Look for the instance's service key name in VTR's key directory.
@@ -89,47 +98,25 @@ class SyncVTRTenant(SyncInstanceUsingAnsible):
             raise Exception("VTR doesn't know how to get the private key for this instance")
 
     def get_extra_attributes(self, o):
-        vtr_service = self.get_vtr_service(o)
-        vcpe_service = self.get_vcpe_service(o)
+        target = self.get_target(o)
+        target_info = self.gather_info(target)
 
-        if not vcpe_service:
-            raise Exception("No vcpeservice")
-
-        instance = self.get_instance(o)
-
+        instance = target_info.get("instance")
         if not instance:
             raise Exception("No instance")
 
-        target = self.get_target(o)
+        fields = {"isolation": instance.isolation,
+                  "container_name": "vsg-%s-%s" % (s_tags[0], c_tags[0]),
+                  "result_fn": "%s-vsg-%s-%s" % (o.test, s_tags[0], c_tags[0]),
+                  "resultcode_fn": "code-%s-vsg-%s-%s" % (o.test, s_tags[0], c_tags[0]) }
 
-        s_tags = []
-        c_tags = []
-        if target and target.volt:
-            s_tags.append(target.volt.s_tag)
-            c_tags.append(target.volt.c_tag)
-
-        fields = {"s_tags": s_tags,
-                "c_tags": c_tags,
-                "isolation": instance.isolation,
-                "container_name": "vcpe-%s-%s" % (s_tags[0], c_tags[0]),
-#                "dns_servers": [x.strip() for x in vcpe_service.dns_servers.split(",")],
-                "result_fn": "%s-vcpe-%s-%s" % (o.test, s_tags[0], c_tags[0]),
-                "resultcode_fn": "code-%s-vcpe-%s-%s" % (o.test, s_tags[0], c_tags[0]) }
-
-        # add in the sync_attributes that come from the vSG object
-        # this will be wan_ip, wan_mac, wan_container_ip, wan_container_mac, ...
-        if target and target.volt and target.volt.vcpe:
-            for attribute_name in ["wan_vm_ip", "wan_container_ip"]:
-                if hasattr(target.volt.vcpe, attribute_name):
-                    fields[attribute_name] = getattr(target.volt.vcpe, attribute_name)
-
-        # add in the sync_attributes that come from the SubscriberRoot object
-#        if target and hasattr(target, "sync_attributes"):
-#            for attribute_name in target.sync_attributes:
-#                fields[attribute_name] = getattr(target, attribute_name)
+        # copy in values that we learned from inspecting the service chain
+        for k in ["s_tag", "c_tag", "wan_vm_ip", "wan_container_ip"]:
+            if get(target_info, k):
+                fields[k] = target_info[k]
 
         for attribute_name in ["scope", "test", "argument"]: # o.sync_attributes:
-            fields[attribute_name] = getattr(o,attribute_name)
+            fields[attribute_name] = getattr(o, attribute_name)
 
         return fields
 
