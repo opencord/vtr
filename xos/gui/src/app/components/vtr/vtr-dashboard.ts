@@ -30,7 +30,8 @@ class VtrDashboardComponent {
   public truckroll: any;
   public loader: boolean;
   public error: string;
-  private tenants = [];
+
+  private services = [];
   private Truckroll;
 
   constructor(
@@ -45,15 +46,14 @@ class VtrDashboardComponent {
     this.XosModelStore.query('CordSubscriberRoot', '/volt/cordsubscriberroots')
       .subscribe(
         res => {
-          console.log(res);
           this.subscribers = res;
         }
       );
 
-    this.XosModelStore.query('Tenant')
+    this.XosModelStore.query('VTRService')
       .subscribe(
         res => {
-          this.tenants = res;
+          this.services = res;
         }
       );
   }
@@ -69,8 +69,7 @@ class VtrDashboardComponent {
     delete this.error;
 
     this.truckroll.target_type = this.getSubscriberContentTypeId(this.truckroll.target_id);
-    
-    this.truckroll.subscriber_tenant_id = this.getVsgTenantForSubscriber(this.truckroll.target_id);
+    this.truckroll.owner_id = this.getServiceInstanceOwnerId();
 
     console.log(this.truckroll);
 
@@ -82,14 +81,12 @@ class VtrDashboardComponent {
     });
   };
 
-  private getVsgTenantForSubscriber(subscriberId: number): number {
-    const voltTenant = _.find(this.tenants, {subscriber_root_id: subscriberId});
-    const vsgTenant = _.find(this.tenants, {subscriber_tenant_id: voltTenant.id});
-    return vsgTenant.id;
-  }
-
   private getSubscriberContentTypeId(subscriberId: number) {
     return _.find(this.subscribers, {id: subscriberId}).self_content_type_id;
+  }
+
+  private getServiceInstanceOwnerId(): number {
+    return this.services[0].id;
   }
 
   private waitForTest(id: number) {
@@ -107,13 +104,14 @@ class VtrDashboardComponent {
           // or
           // if is synced
           if (
-              testResult.backend_status.indexOf('2') >= 0 ||
-              testResult.backend_status.indexOf('1') >= 0 ||
+              testResult.backend_code == 2 ||
+              testResult.backend_code == 1 ||
+              angular.isDefined(testResult.result) ||
               testResult.is_synced
             ) {
             this.truckroll = angular.copy(testResult);
             this.loader = false;
-            // this.Truckroll.delete({id: id});
+            this.Truckroll.delete({id: id});
           }
           // else keep polling
           else {
