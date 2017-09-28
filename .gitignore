@@ -2,4 +2,5 @@
 xos/gui/node_modules/
 xos/gui/.tmp/
 xos/gui/typings/
+xos/gui/dist/
 npm-debug.log
