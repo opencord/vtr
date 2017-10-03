@@ -1,3 +1,4 @@
+#! /bin/bash   
 
 # Copyright 2017-present Open Networking Foundation
 #
@@ -13,9 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-#! /bin/bash
 INTERFACE=$1
 tcpdump -n -e -i $INTERFACE -c 10 &
-curl http://xosproject.org/ &> /dev/null &
+curl http://xosproject.org/ -o /dev/null &
 sleep 10s
