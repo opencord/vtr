@@ -22,6 +22,30 @@
       "revId": "7c80bf174b9cacb57760ef7274ec5723cf56fdee",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3433928c_69fd7e33",
+        "filename": "xos/gui/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2017-11-17T16:39:11Z",
+      "side": 1,
+      "message": "We can set it to a fixed version, I left it to latest to have security updates, and the only thing used by this container before exiting is \"cp\" to share the files with xos-gui so I think updates won\u0027t break anything",
+      "parentUuid": "387a10a2_3a776168",
+      "range": {
+        "startLine": 24,
+        "startChar": 12,
+        "endLine": 24,
+        "endChar": 18
+      },
+      "revId": "7c80bf174b9cacb57760ef7274ec5723cf56fdee",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
