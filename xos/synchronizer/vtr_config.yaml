@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-name: vtr-synchronizer
+name: vtr
 accessor:
   username: xosadmin@opencord.org
   password: "@/opt/xos/services/vtr/credentials/xosadmin@opencord.org"
@@ -26,3 +26,4 @@ required_models:
 dependency_graph: "/opt/xos/synchronizers/vtr/model-deps"
 steps_dir: "/opt/xos/synchronizers/vtr/steps"
 sys_dir: "/opt/xos/synchronizers/vtr/sys"
+models_dir: "/opt/xos/synchronizers/vtr/models"

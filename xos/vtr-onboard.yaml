@@ -29,11 +29,6 @@ topology_template:
           base_url: file:///opt/xos_services/vtr/xos/
           # The following will concatenate with base_url automatically, if
           # base_url is non-null.
-          xproto: ./
-          admin: admin.py
-          admin_template: templates/vtradmin.html
-          tosca_custom_types: tosca/custom_types/vtr.yaml
-          tosca_resource: tosca/resources/vtrservice.py
           private_key: file:///opt/xos/key_import/vsg_rsa
           public_key: file:///opt/xos/key_import/vsg_rsa.pub
 
