@@ -4,6 +4,7 @@ option name="vtr";
 
 message VTRTenant (ServiceInstance){
     option verbose_name="Virtual Truck Roll Tenant";
+    option owner_class_name="VTRService";
 
     required string test = 1 [choices = "(('ping', 'Ping'), ('traceroute', 'Trace Route'), ('tcpdump', 'Tcp Dump'), ('memory', 'Memory'), ('bandwidth', 'Bandwidth'))", max_length = 30, content_type = "stripped", blank = False, help_text = "type of test", null = False, db_index = False];
     required string scope = 2 [choices = "(('container', 'Container'), ('vm', 'VM'))", max_length = 30, content_type = "stripped", blank = False, help_text = "scope of test", null = False, db_index = False];
